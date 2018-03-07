@@ -18,6 +18,10 @@ def process(file, tier, search, replace):
     xpath = f"//TIER[@LINGUISTIC_TYPE_REF='{tier}']//ANNOTATION_VALUE"
     for annot in eaf.xpath(xpath):
         annot.text = re.sub(search, replace, annot.text)
+    # don't let lxml turn empty annotations into self-closing tags to avoid spurious differences
+    for annot in eaf.xpath("//ANNOTATION_VALUE"):
+        if annot.text is None:
+            annot.text = ""
     xml_dump = etree.tounicode(eaf.getroot(), pretty_print=True)
     # the attribs of the root element get mixed up by lxml → use the original ones for the sake of
     # sane diffs; ditto the XML declaration line (see below)
