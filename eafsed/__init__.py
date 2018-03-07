@@ -1,12 +1,10 @@
-import os.path as osp
 import click as cli
 import logging as log
 
 from lxml import etree
 import regex as re
 
-NAME = osp.splitext(osp.basename(__file__))[0]
-LOG = log.getLogger(NAME)
+LOG = log.getLogger(__name__)
 LOGLEVELS = [s for f, s in sorted(
     (v, k) for k, v in vars(log).items() if k.isupper() and isinstance(v, int))]
 
@@ -45,7 +43,7 @@ def main(tier, search, replace, lvl, verbose, quiet, input):
 
     """
     lvl = getattr(log, lvl) - 10*verbose + 10*quiet
-    log.basicConfig(level=lvl, format="[%(asctime)s {}:%(levelname)s] %(message)s".format(NAME))
+    log.basicConfig(level=lvl, format="[%(asctime)s {}:%(levelname)s] %(message)s".format(__name__))
     LOG.debug(f"Replacing {search} with {replace}.")
     for file in input:
         LOG.info(f"Processing {file.name}.")
